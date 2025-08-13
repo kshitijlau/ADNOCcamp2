@@ -35,12 +35,12 @@ def create_sample_files():
 
     # Convert DataFrames to Excel format in memory
     output_scores = io.BytesIO()
-    with pd.ExcelWriter(output_scores, engine='xlsxwriter') as writer:
+    with pd.ExcelWriter(output_scores, engine='openpyxl') as writer:
         scores_df.to_excel(writer, index=False, sheet_name='Scores')
     processed_scores = output_scores.getvalue()
 
     output_comments = io.BytesIO()
-    with pd.ExcelWriter(output_comments, engine='xlsxwriter') as writer:
+    with pd.ExcelWriter(output_comments, engine='openpyxl') as writer:
         comments_df.to_excel(writer, index=False, sheet_name='Comments')
     processed_comments = output_comments.getvalue()
     
@@ -130,8 +130,8 @@ with st.sidebar:
 # --- Main Panel for Report Generation ---
 if uploaded_scores_file and uploaded_comments_file:
     try:
-        scores_df = pd.read_excel(uploaded_scores_file)
-        comments_df = pd.read_excel(uploaded_comments_file)
+        scores_df = pd.read_excel(uploaded_scores_file, engine='openpyxl')
+        comments_df = pd.read_excel(uploaded_comments_file, engine='openpyxl')
 
         st.header("Generate All Summaries")
         st.info(f"Found **{len(scores_df['name'].unique())}** candidates in the uploaded files. Click the button below to generate all reports.")
@@ -141,16 +141,26 @@ if uploaded_scores_file and uploaded_comments_file:
                 st.error("Please enter your Gemini API key in the sidebar to proceed.")
             else:
                 all_summaries = []
+                skipped_candidates = []
                 candidate_list = scores_df['name'].unique()
                 progress_bar = st.progress(0)
                 
                 for i, candidate_name in enumerate(candidate_list):
                     with st.spinner(f"Generating report for {candidate_name} ({i+1}/{len(candidate_list)})..."):
                         
-                        # --- Data Preparation ---
+                        # --- Data Validation and Preparation ---
+                        strength_df = comments_df[(comments_df['name'] == candidate_name) & (comments_df['comment_type'] == 'Strength')]
+                        dev_df = comments_df[(comments_df['name'] == candidate_name) & (comments_df['comment_type'] == 'Development Area')]
+
+                        # Check if comments exist before proceeding
+                        if strength_df.empty or dev_df.empty:
+                            skipped_candidates.append(candidate_name)
+                            progress_bar.progress((i + 1) / len(candidate_list))
+                            continue # Skip to the next candidate
+                        
                         candidate_data = scores_df[scores_df['name'] == candidate_name].iloc[0].to_dict()
-                        strength_comments = comments_df[(comments_df['name'] == candidate_name) & (comments_df['comment_type'] == 'Strength')].iloc[0].to_dict()
-                        dev_comments = comments_df[(comments_df['name'] == candidate_name) & (comments_df['comment_type'] == 'Development Area')].iloc[0].to_dict()
+                        strength_comments = strength_df.iloc[0].to_dict()
+                        dev_comments = dev_df.iloc[0].to_dict()
 
                         # --- Master Prompt ---
                         master_prompt = """
@@ -315,10 +325,7 @@ Follow this sequential process precisely.
 """
                         # --- Dynamically insert candidate data into the prompt ---
                         final_prompt = master_prompt.format(
-                            name=candidate_data['name'],
-                            gender=candidate_data['gender'],
-                            level=candidate_data['level'],
-                            **candidate_data, # Unpacks all score columns
+                            **candidate_data, # This now provides name, gender, level, and all scores
                             **{f"s_{k.replace(' ', '_')}": v for k, v in strength_comments.items()},
                             **{f"d_{k.replace(' ', '_')}": v for k, v in dev_comments.items()}
                         )
@@ -332,11 +339,14 @@ Follow this sequential process precisely.
 
                 st.success("All summaries have been generated successfully!")
                 
+                if skipped_candidates:
+                    st.warning(f"The following candidates were skipped due to missing comment data: {', '.join(skipped_candidates)}")
+
                 # --- Create and provide download link for the results ---
                 results_df = pd.DataFrame(all_summaries)
                 
                 output_results = io.BytesIO()
-                with pd.ExcelWriter(output_results, engine='xlsxwriter') as writer:
+                with pd.ExcelWriter(output_results, engine='openpyxl') as writer:
                     results_df.to_excel(writer, index=False, sheet_name='Generated Summaries')
                 processed_results = output_results.getvalue()
 
