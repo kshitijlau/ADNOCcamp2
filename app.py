@@ -52,7 +52,7 @@ def call_gemini_api(prompt, api_key):
     if not api_key:
         return "Error: Gemini API key is missing. Please provide it in the sidebar."
 
-    model_name = "gemini-2.5-flash-preview-05-20"
+    model_name = "gemini-2.5-pro"
     url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent?key={api_key}"
     
     headers = {'Content-Type': 'application/json'}
