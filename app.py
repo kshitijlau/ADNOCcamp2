@@ -52,7 +52,7 @@ def call_gemini_api(prompt, api_key):
     if not api_key:
         return "Error: Gemini API key is missing. Please provide it in the sidebar."
 
-    model_name = "gemini-2.5-pro"
+    model_name = "gemini-2.5-flash-preview-05-20"
     url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent?key={api_key}"
     
     headers = {'Content-Type': 'application/json'}
@@ -72,7 +72,9 @@ def call_gemini_api(prompt, api_key):
                 content_part = result['candidates'][0].get('content', {}).get('parts', [{}])[0]
                 return content_part.get('text', "Error: Could not extract text from API response.")
             else:
-                return f"Error: The API response was invalid. Response: {result}"
+                # Log the invalid response for debugging
+                st.write(f"Invalid API response received: {result}")
+                return f"Error: The API response was invalid."
 
         except requests.exceptions.RequestException as e:
             if i < max_retries - 1:
@@ -88,8 +90,8 @@ st.set_page_config(layout="wide", page_title="Leadership Report Generator")
 
 st.title("🤖 Leadership Potential Report Generator")
 st.markdown("""
-This application uses Gemini to generate a Leadership Potential Report based on candidate scores and assessor comments.
-Please upload the required files and provide your Gemini API key in the sidebar.
+This application uses Gemini to generate Leadership Potential Reports for all candidates in your uploaded files.
+The final output will be a single Excel file containing all the generated summaries.
 """)
 
 # --- Sidebar for Uploads and Downloads ---
@@ -131,30 +133,26 @@ if uploaded_scores_file and uploaded_comments_file:
         scores_df = pd.read_excel(uploaded_scores_file)
         comments_df = pd.read_excel(uploaded_comments_file)
 
-        st.header("Select Candidate")
-        candidate_name = st.selectbox("Choose a candidate to generate a report for:", scores_df['name'].unique())
+        st.header("Generate All Summaries")
+        st.info(f"Found **{len(scores_df['name'].unique())}** candidates in the uploaded files. Click the button below to generate all reports.")
         
-        if candidate_name:
-            st.info(f"You have selected **{candidate_name}**. Click the button below to generate the report.")
-            
-            if st.button("✨ Generate Report", type="primary"):
-                if not gemini_api_key:
-                    st.error("Please enter your Gemini API key in the sidebar to proceed.")
-                else:
-                    with st.spinner(f"Analyzing {candidate_name}'s profile and generating report..."):
+        if st.button("✨ Generate All Summaries", type="primary"):
+            if not gemini_api_key:
+                st.error("Please enter your Gemini API key in the sidebar to proceed.")
+            else:
+                all_summaries = []
+                candidate_list = scores_df['name'].unique()
+                progress_bar = st.progress(0)
+                
+                for i, candidate_name in enumerate(candidate_list):
+                    with st.spinner(f"Generating report for {candidate_name} ({i+1}/{len(candidate_list)})..."):
                         
                         # --- Data Preparation ---
                         candidate_data = scores_df[scores_df['name'] == candidate_name].iloc[0].to_dict()
-                        
-                        strength_comments = comments_df[
-                            (comments_df['name'] == candidate_name) & (comments_df['comment_type'] == 'Strength')
-                        ].iloc[0].to_dict()
-                        
-                        dev_comments = comments_df[
-                            (comments_df['name'] == candidate_name) & (comments_df['comment_type'] == 'Development Area')
-                        ].iloc[0].to_dict()
+                        strength_comments = comments_df[(comments_df['name'] == candidate_name) & (comments_df['comment_type'] == 'Strength')].iloc[0].to_dict()
+                        dev_comments = comments_df[(comments_df['name'] == candidate_name) & (comments_df['comment_type'] == 'Development Area')].iloc[0].to_dict()
 
-                        # --- Master Prompt with full matrices and few-shot examples ---
+                        # --- Master Prompt ---
                         master_prompt = """
 You are an expert talent management consultant. Your task is to generate a concise and insightful leadership potential summary based on a candidate's assessment data. The output must be professional, behavioral, and strictly adhere to the format and rules outlined in the Appendix.
 
@@ -327,12 +325,29 @@ Follow this sequential process precisely.
                         
                         # --- Live API Call ---
                         report_text = call_gemini_api(final_prompt, gemini_api_key)
+                        all_summaries.append({'name': candidate_name, 'summary': report_text})
                         
-                        st.header(f"Leadership Potential Report for {candidate_name}")
-                        st.markdown(report_text)
-                        
-                        with st.expander("Show Full Prompt Sent to Model"):
-                            st.text(final_prompt)
+                        # Update progress bar
+                        progress_bar.progress((i + 1) / len(candidate_list))
+
+                st.success("All summaries have been generated successfully!")
+                
+                # --- Create and provide download link for the results ---
+                results_df = pd.DataFrame(all_summaries)
+                
+                output_results = io.BytesIO()
+                with pd.ExcelWriter(output_results, engine='xlsxwriter') as writer:
+                    results_df.to_excel(writer, index=False, sheet_name='Generated Summaries')
+                processed_results = output_results.getvalue()
+
+                st.dataframe(results_df)
+
+                st.download_button(
+                    label="⬇️ Download All Summaries (.xlsx)",
+                    data=processed_results,
+                    file_name="all_candidate_summaries.xlsx",
+                    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                )
 
     except Exception as e:
         st.error(f"An error occurred while processing the files: {e}")
