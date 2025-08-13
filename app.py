@@ -172,11 +172,11 @@ First, learn from these high-quality examples (golden standards):
 **EXAMPLE 1**
 * **INPUT DATA:**
     * First Name: Ayesha, Gender: Female, Level: Guide
-    * Scores: Overall Leadership: 2.97, Drives Results: 3.0, Leads People: 3.2, Manages Stakeholders: 2.4, Thinks Strategically: 3.4, Solves Challenges: 3.9, Steers Change: 2.9
-    * Strength Comment (Solves Challenges): The candidate demonstrates strong ability to identify issues proactively and develop effective, logical solutions.
-    * Strength Comment (Thinks Strategically): The candidate demonstrates a solid understanding of both short-term and long-term strategic approaches to projects.
-    * Development Comment (Manages Stakeholders): The candidate would benefit from ensuring that the mutual objectives of relevant stakeholders are aligned and supported, to secure buy-in and sustain long-lasting relationships.
-    * Development Comment (Steers Change): The candidate would benefit from proactively seeking to understand the underlying reasons for change, to better sustain team motivation and engagement throughout the change process.
+    * Scores: Overall_Leadership: 2.97, Drives_Results: 3.0, Leads_People: 3.2, Manages_Stakeholders: 2.4, Thinks_Strategically: 3.4, Solves_Challenges: 3.9, Steers_Change: 2.9
+    * Strength Comment (Solves_Challenges): The candidate demonstrates strong ability to identify issues proactively and develop effective, logical solutions.
+    * Strength Comment (Thinks_Strategically): The candidate demonstrates a solid understanding of both short-term and long-term strategic approaches to projects.
+    * Development Comment (Manages_Stakeholders): The candidate would benefit from ensuring that the mutual objectives of relevant stakeholders are aligned and supported, to secure buy-in and sustain long-lasting relationships.
+    * Development Comment (Steers_Change): The candidate would benefit from proactively seeking to understand the underlying reasons for change, to better sustain team motivation and engagement throughout the change process.
 * **CORRECT OUTPUT:**
     Ayesha demonstrates average potential for growth and success in a more complex role. A confident and resilient problem-solver, she navigates ambiguity well and shows an awareness of the bigger picture. While she is adaptable to change and supports others' development, her drive to achieve goals can be inconsistent, and she may need support to remain decisive during uncertainty. Her primary development area is in stakeholder engagement, where she would benefit from building stronger, more collaborative relationships.
 
@@ -191,11 +191,11 @@ First, learn from these high-quality examples (golden standards):
 **EXAMPLE 2**
 * **INPUT DATA:**
     * First Name: Badreyah, Gender: Female, Level: Apply
-    * Scores: Overall Leadership: 3.66, Drives Results: 3.9, Leads People: 4.2, Manages Stakeholders: 4.2, Thinks Strategically: 3.9, Solves Challenges: 3.9, Steers Change: 4.3
-    * Strength Comment (Steers Change): The candidate demonstrated strong comfort with changing environments and is supportive of adopting change initiatives.
-    * Strength Comment (Leads People): The candidate demonstrates high effectiveness in collaborating with the team to develop solutions and achieve shared goals.
-    * Development Comment (Thinks Strategically): Minimal development could be orientated towards improving task prioritization and effectively allocating workload to focus on strategically important activities.
-    * Development Comment (Manages Stakeholders): Minor development could be focused on developing strategies to maintain key relationships over the long term that support sustained business outcomes.
+    * Scores: Overall_Leadership: 3.66, Drives_Results: 3.9, Leads_People: 4.2, Manages_Stakeholders: 4.2, Thinks_Strategically: 3.9, Solves_Challenges: 3.9, Steers_Change: 4.3
+    * Strength Comment (Steers_Change): The candidate demonstrated strong comfort with changing environments and is supportive of adopting change initiatives.
+    * Strength Comment (Leads_People): The candidate demonstrates high effectiveness in collaborating with the team to develop solutions and achieve shared goals.
+    * Development Comment (Thinks_Strategically): Minimal development could be orientated towards improving task prioritization and effectively allocating workload to focus on strategically important activities.
+    * Development Comment (Manages_Stakeholders): Minor development could be focused on developing strategies to maintain key relationships over the long term that support sustained business outcomes.
 * **CORRECT OUTPUT:**
     Badreyah demonstrates high potential for growth and success in a more complex role. She excels in changing and complex environments, showing great adaptability and decisiveness. A natural leader, she inspires others and builds strong, trust-based relationships while focusing on team development. Badreyah consistently demonstrates high motivation to achieve results, approaches her work with a strategic focus on the bigger picture, and solves challenges with confidence. Her development can focus on scaling these impressive strengths for even greater complexity.
 
@@ -216,27 +216,27 @@ Now, using the rules and interpretation matrices in the Appendix below, generate
 * **Gender:** {gender}
 * **Level:** {level}
 * **Scores:**
-    * Overall Leadership: {Overall Leadership}
-    * Drives Results: {Drives Results}
-    * Leads People: {Leads People}
-    * Manages Stakeholders: {Manages Stakeholders}
-    * Thinks Strategically: {Thinks Strategically}
-    * Solves Challenges: {Solves Challenges}
-    * Steers Change: {Steers Change}
+    * Overall_Leadership: {Overall_Leadership}
+    * Drives_Results: {Drives_Results}
+    * Leads_People: {Leads_People}
+    * Manages_Stakeholders: {Manages_Stakeholders}
+    * Thinks_Strategically: {Thinks_Strategically}
+    * Solves_Challenges: {Solves_Challenges}
+    * Steers_Change: {Steers_Change}
 * **Assessor Strength Comments:**
-    * Drives Results: {s_Drives Results}
-    * Leads People: {s_Leads People}
-    * Manages Stakeholders: {s_Manages Stakeholders}
-    * Thinks Strategically: {s_Thinks Strategically}
-    * Solves Challenges: {s_Solves Challenges}
-    * Steers Change: {s_Steers Change}
+    * Drives_Results: {s_Drives_Results}
+    * Leads_People: {s_Leads_People}
+    * Manages_Stakeholders: {s_Manages_Stakeholders}
+    * Thinks_Strategically: {s_Thinks_Strategically}
+    * Solves_Challenges: {s_Solves_Challenges}
+    * Steers_Change: {s_Steers_Change}
 * **Assessor Development Area Comments:**
-    * Drives Results: {d_Drives Results}
-    * Leads People: {d_Leads People}
-    * Manages Stakeholders: {d_Manages Stakeholders}
-    * Thinks Strategically: {d_Thinks Strategically}
-    * Solves Challenges: {d_Solves Challenges}
-    * Steers Change: {d_Steers Change}
+    * Drives_Results: {d_Drives_Results}
+    * Leads_People: {d_Leads_People}
+    * Manages_Stakeholders: {d_Manages_Stakeholders}
+    * Thinks_Strategically: {d_Thinks_Strategically}
+    * Solves_Challenges: {d_Solves_Challenges}
+    * Steers_Change: {d_Steers_Change}
 
 ---
 ### APPENDIX: RULES AND MATRICES
@@ -250,7 +250,7 @@ Your final output must contain two parts:
 Follow this sequential process precisely.
 
 * **Step 1: The Opening Sentence**
-    Begin the summary paragraph with the sentence that corresponds exactly to the candidate's **Overall Leadership** score, using the "Overall Leadership Potential Matrix" below. Use the candidate's first name.
+    Begin the summary paragraph with the sentence that corresponds exactly to the candidate's **Overall_Leadership** score, using the "Overall Leadership Potential Matrix" below. Use the candidate's first name.
 
 * **Step 2: The Summary Paragraph Narrative**
     After the opening sentence, construct a narrative paragraph by performing the following:
@@ -323,12 +323,17 @@ Follow this sequential process precisely.
 | **Solves Challenges** | Consistently addresses problems and challenges with confidence and resilience. Takes a diligent, practical, and solution-focused approach to solving issues. Will likely remain composed in the face of setbacks and approach problems with a positive “can do” attitude. | Demonstrates ability to address problems but may need support or time to build confidence and resilience. Attempts a practical approach but not always solution-focused. Moderate ability to identify issues proactively, and takes action when promoted. Sometimes may struggle to remain composed under pressure. | Struggles to address problems confidently. May rely heavily on others and may not take a practical or solution-oriented approach. Does not prioritise working with others to solve problems and identify solutions. Struggles to remain composed under pressure or maintain a positive approach. |
 | **Steers Change** | Thrives in change and complexity in the workplace. Manages new ways of working with adaptability, flexibility, and decisiveness during uncertainty. Supports implementation of new change initiatives and takes appropriate follow-up action. | Generally copes with change and can adapt when needed. May need support to remain flexible or decisive in uncertain situations. Operates with a degree of comfort when facts are not fully available and support change initiatives, but follow-up action may be delayed or inconsistent. | Struggles with change or uncertainty. May resist new ways of working and has difficulty adapting or deciding in changing circumstances. May be uncomfortable operating when facts are unclear and is unlikely to support change initiatives. |
 """
+                        # --- Create a single dictionary with all keys transformed to use underscores ---
+                        format_dict = {}
+                        for k, v in candidate_data.items():
+                            format_dict[k.replace(' ', '_')] = v
+                        for k, v in strength_comments.items():
+                            format_dict[f"s_{k.replace(' ', '_')}"] = v
+                        for k, v in dev_comments.items():
+                            format_dict[f"d_{k.replace(' ', '_')}"] = v
+
                         # --- Dynamically insert candidate data into the prompt ---
-                        final_prompt = master_prompt.format(
-                            **candidate_data, # This now provides name, gender, level, and all scores
-                            **{f"s_{k.replace(' ', '_')}": v for k, v in strength_comments.items()},
-                            **{f"d_{k.replace(' ', '_')}": v for k, v in dev_comments.items()}
-                        )
+                        final_prompt = master_prompt.format(**format_dict)
                         
                         # --- Live API Call ---
                         report_text = call_gemini_api(final_prompt, gemini_api_key)
